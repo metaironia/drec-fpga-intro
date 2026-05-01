@@ -102,7 +102,7 @@ endfunction
 
 task print_curr_test;
     input [N-1:0] a, b;
-    input [4:0] op;
+    input [4:0]   op;
     begin
         $display("[%t] alu_op=%b, a=%b, b=%b", $realtime, op, a, b);
     end
