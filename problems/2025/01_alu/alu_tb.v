@@ -116,7 +116,7 @@ localparam second_checkpoint_value = 0 - {1'b1, 7'b0};
 
 // in_a and in_b can only be in the range 0, ..., first_checkpoint_value, second_checkpoint_value, ..., N(0'b1}
 always begin
-    case (alu_op)
+    #1 case (alu_op)
         4'b0000: test_ref = add(in_a, in_b);
         4'b0001: test_ref = sub(in_a, in_b);
         4'b0010: test_ref = sll(in_a, in_b);
@@ -129,7 +129,7 @@ always begin
         4'b1001: test_ref = and_f(in_a, in_b);
         default: test_ref = 0;
     endcase
-    #1 print_curr_test(in_a, in_b, alu_op);
+    print_curr_test(in_a, in_b, alu_op);
     are_tests_ok = are_tests_ok && print_test_res(test_ref, out);
     
     #1 in_b = in_b + 1;
