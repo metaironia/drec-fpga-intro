@@ -3,7 +3,7 @@ module alu #(
 )(
     input  wire [N-1:0] i_a,
     input  wire [N-1:0] i_b,
-    input  wire [4:0]  i_op,
+    input  wire [4:0]   i_op,
     output reg  [N-1:0] o_res
 );
 
