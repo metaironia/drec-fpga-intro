@@ -24,7 +24,7 @@ module is_nan #(
 localparam EXP_MANT_BITS = EXP_BITS + MANT_BITS;
 
 always @(*) begin
-    o_is_nan = |i_a[EXP_MANT_BITS-1:MANT_BITS] & |i_a[MANT_BITS-1:0];
+    o_is_nan = &i_a[EXP_MANT_BITS-1:MANT_BITS] & |i_a[MANT_BITS-1:0];
 end
 
 endmodule
@@ -40,15 +40,25 @@ module exponent_adder #(
 
 reg [EXP_BITS:0] tmp_exp;
 
+wire [EXP_BITS-2:0] bias;
+wire [EXP_BITS:0] three_biases;
+
+assign bias = {(EXP_BITS-1){1'b1}};
+assign three_biases = bias * 3;
+// TODO biases
 always @(*) begin
     tmp_exp = i_exp_a + i_exp_b;
-    if (tmp_exp[EXP_BITS] >= {(EXP_BITS-1){1'b1}}) begin
+    if (tmp_exp < bias) begin
+        o_is_inf = 1'b0;
+        o_res_exp = 1'b0;
+    end
+    if (tmp_exp > three_biases) begin
         o_is_inf = 1'b1;
         o_res_exp = {EXP_BITS{1'b1}};
     end
     else begin
         o_is_inf = 1'b0;
-        o_res_exp = tmp_exp[EXP_BITS-1:0];
+        o_res_exp = tmp_exp - bias;
     end
 end
 
@@ -64,24 +74,21 @@ module exponent_updater #(
     output reg                 o_is_inf
 );
 
-wire exp_adder_is_inf;
-wire [EXP_BITS-1:0] exp_adder_res_exp;
-
 reg [EXP_BITS-1:0] one = {{(EXP_BITS-1){1'b0}}, 1'b1};
 
 always @(*) begin
-    if (!i_update) begin
+    if (!i_update || i_is_inf) begin
         o_is_inf = i_is_inf;
         o_res_exp = i_exp_a;
     end
-    else begin
-        o_is_inf = exp_adder_is_inf;
-        o_res_exp = exp_adder_res_exp;
+    else if (!i_is_inf) begin
+        o_res_exp = i_exp_a + 1'b1;
+        if (&o_res_exp[EXP_BITS-1:0])
+            o_is_inf = 1'b1;
+        else
+            o_is_inf = 1'b0;
     end
 end
-
-exponent_adder #(.EXP_BITS(EXP_BITS)) exp_adder(.i_exp_a(i_exp_a), .i_exp_b(one),
-                                                .o_res_exp(exp_adder_res_exp), .o_is_inf(exp_adder_is_inf));
 
 endmodule
 
@@ -97,7 +104,9 @@ localparam EXP_MANT_BITS = EXP_BITS + MANT_BITS;
 
 always @(*) begin
     if (!(|i_a[EXP_MANT_BITS-1:MANT_BITS]))
-        o_res = {i_a[EXP_MANT_BITS:MANT_BITS], {MANT_BITS{1'b1}}};
+        o_res = {i_a[EXP_MANT_BITS], {(EXP_MANT_BITS){1'b0}}};
+    else
+        o_res = i_a;
 end
 
 endmodule
@@ -110,7 +119,7 @@ module normalize_mantissa_after_mul #(
     output reg o_is_shifted
 );
 
-localparam DOUBLE_MANT_SIZE = (MANT_BITS+1) * 2;
+localparam DOUBLE_MANT_SIZE = (MANT_BITS + 1) * 2;
 
 always @(*) begin
     if (i_mant[DOUBLE_MANT_SIZE-1] == 1'b1) begin

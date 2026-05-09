@@ -6,11 +6,12 @@ module fp16mul #(
 )(
     input  wire [EXP_MANT_BITS:0] i_a,
     input  wire [EXP_MANT_BITS:0] i_b,
-    output reg  [EXP_MANT_BITS:0] o_res
+    output wire [EXP_MANT_BITS:0] o_res
 );
 
 localparam EXP_MANT_BITS = EXP_BITS + MANT_BITS;
 localparam DOUBLE_MANT_SIZE = (MANT_BITS + 1) * 2;
+localparam BIAS = 2 ** (EXP_BITS - 1) - 1; 
 
 function get_sign_bit;
     input [EXP_MANT_BITS:0] fp16;
@@ -19,7 +20,7 @@ function get_sign_bit;
     end
 endfunction
 
-function [EXP_MANT_BITS-1:MANT_BITS] get_exponent_bits;
+function [EXP_BITS-1:0] get_exponent_bits;
     input [EXP_MANT_BITS:0] fp16;
     begin
         get_exponent_bits = fp16[EXP_MANT_BITS-1:MANT_BITS];
@@ -55,18 +56,20 @@ wire [DOUBLE_MANT_SIZE-1:0] mant_mul_res;
 wire [DOUBLE_MANT_SIZE-1:0] mant_mul_after_norm;
 wire [MANT_BITS-1:0] mant_mul_after_round;
 
+reg [EXP_MANT_BITS:0] num_after_round;
+
 assign mant_mul_res = full_mant_a * full_mant_b;
 
 // rounding towards zero
 always @(*) begin
-    o_res[EXP_MANT_BITS] = get_sign_bit(i_a) ^ get_sign_bit(i_b);
+    num_after_round[EXP_MANT_BITS] = get_sign_bit(i_a) ^ get_sign_bit(i_b);
     
     if (is_a_nan || is_b_nan)
-        o_res[EXP_MANT_BITS-1:0] = {{(EXP_BITS){1'b1}}, {(MANT_BITS-1){1'b0}}, {1'b1}}; 
+        num_after_round[EXP_MANT_BITS-1:0] = {{(EXP_BITS){1'b1}}, {(MANT_BITS-1){1'b0}}, {1'b1}}; 
     else if (is_inf_after_norm)
-        o_res[EXP_MANT_BITS-1:0] = {{(EXP_BITS){1'b1}}, {(MANT_BITS){1'b0}}};
+        num_after_round[EXP_MANT_BITS-1:0] = {{(EXP_BITS){1'b1}}, {(MANT_BITS){1'b0}}};
     else
-        o_res[EXP_MANT_BITS-1:0] = {exp_sum_after_norm, mant_mul_after_round};
+        num_after_round[EXP_MANT_BITS-1:0] = {exp_sum_after_norm, mant_mul_after_round};
 end
 
 is_nan #(.EXP_BITS(EXP_BITS), .MANT_BITS(MANT_BITS)) is_in_a_nan_inst(.i_a(i_a),
@@ -99,5 +102,7 @@ exponent_updater #(.EXP_BITS(EXP_BITS)) exp_updater_after_norm_inst(.i_exp_a(ini
 round_toward_zero #(.MANT_BITS(MANT_BITS)) round_mant_after_norm_inst(.i_mant(mant_mul_after_norm),
                                                                       .o_mant(mant_mul_after_round));
 
+denormal_as_zero #(.EXP_BITS(EXP_BITS), .MANT_BITS(MANT_BITS)) get_das_out_inst(.i_a(num_after_round),
+                                                                                .o_res(o_res));
 
 endmodule
