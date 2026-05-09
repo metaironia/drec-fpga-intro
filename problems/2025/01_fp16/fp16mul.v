@@ -9,7 +9,6 @@ module fp16mul #(
 
 localparam EXP_MANT_BITS = EXP_BITS + MANT_BITS;
 localparam DOUBLE_MANT_SIZE = (MANT_BITS + 1) * 2;
-localparam BIAS = 2 ** (EXP_BITS - 1) - 1; 
 
 function get_sign_bit;
     input [EXP_MANT_BITS:0] fp16;
