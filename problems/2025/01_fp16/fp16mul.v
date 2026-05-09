@@ -1,5 +1,3 @@
-
-
 module fp16mul #(
     parameter EXP_BITS = 5,
     parameter MANT_BITS = 10
