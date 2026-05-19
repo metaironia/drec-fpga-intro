@@ -6,7 +6,7 @@ localparam N = 32;
 
 reg  [N-1:0] in_a   = 1'b0;
 reg  [N-1:0] in_b   = 1'b0; 
-reg  [4:0]   alu_op = 4'b0;
+reg  [3:0]   alu_op = 4'b0;
 reg  [N-1:0] test_ref;
 wire [N-1:0] out;
 
