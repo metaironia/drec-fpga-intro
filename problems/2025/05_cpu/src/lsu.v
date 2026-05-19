@@ -10,4 +10,6 @@ module lsu (
     wire [31:0] i_dmem_data;
 );
 
+assign o_core_data
+
 endmodule
