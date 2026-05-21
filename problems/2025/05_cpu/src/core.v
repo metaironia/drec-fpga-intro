@@ -130,6 +130,7 @@ lsu lsu_inst (
     .i_wr_data (src2            ),
     .i_mask    (ld_st_mask      ),
     .i_wren    (control2lsu_wren),
+    .o_data    (lsu_data        ),
     .o_mem_addr(o_mem_addr      ),
     .o_mem_data(o_mem_data      ),
     .o_mem_we  (o_mem_we        ),
