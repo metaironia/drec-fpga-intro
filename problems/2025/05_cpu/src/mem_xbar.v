@@ -1,8 +1,8 @@
 module mem_xbar #(
     parameter DATA_START = 30'h0400,
-    parameter DATA_LIMIT = 30'h3FFF
+    parameter DATA_LIMIT = 30'h3FFF,
     parameter MMIO_START = 30'h0000,
-    parameter MMIO_LIMIT = 30'h03FF,
+    parameter MMIO_LIMIT = 30'h03FF
 )(
     input  wire [29:0] i_addr,
     input  wire [31:0] i_data,
@@ -37,10 +37,10 @@ assign o_d_mmio_wren = is_addr_mmio && i_wren;
 always @(*) begin
     if (is_addr_data)
         o_data = i_dmem_data;
-    else (is_addr_mmio)
-        o_data = i_dmem_mmio;
+    else if (is_addr_mmio)
+        o_data = i_mmio_data;
     else
-        o_data = 32'hFEE1DEAD;
+        o_data = 32'hDEAD;
 end
 
 endmodule

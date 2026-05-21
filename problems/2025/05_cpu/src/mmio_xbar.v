@@ -12,7 +12,7 @@ module mmio_xbar(
 assign o_mmio_data = o_mmio_data;
 
 always @(*) begin
-    o_hexd_data = 16'bDEAD;
+    o_hexd_data = 16'hDEAD;
     o_hexd_wren = 1'b0;
 
     if (i_mmio_addr == `XBAR_HEXD_ADDR0) begin
