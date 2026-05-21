@@ -9,6 +9,7 @@ RTL_LIST := 		\
 	src/control.v	\
 	src/imem.v		\
 	src/dmem.v		\
+	src/mmio_xbar.v \
 	src/mem_xbar.v	\
 	src/lsu.v		\
 	src/mux4.v		\

@@ -18,7 +18,7 @@ wire [31:0] i_imm = {{20{i_instr_data[31]}}, i_instr_data[31:20]};
 wire [31:0] s_imm = {{20{i_instr_data[31]}}, i_instr_data[31:25], i_instr_data[11:7]};
 
 wire [4:0] rs1 = i_instr_data[19:15];
-wire [4:0] rs1 = i_instr_data[24:20];
+wire [4:0] rs2 = i_instr_data[24:20];
 wire [4:0] rd  = i_instr_data[11:7];
 
 wire [31:0] src1;
@@ -57,8 +57,9 @@ wire is_branch_taken = (is_branch_taken_after_cmp && control_is_instr_branch) ||
 
 wire [31:0] wb2regfile;
 
-wire [2:0] ld_st_mask = i_instr_data[14:12];
-wire       control2lsu_wren;
+wire [2:0]  ld_st_mask = i_instr_data[14:12];
+wire        control2lsu_wren;
+wire [31:0] lsu_data;
 
 control_unit control (
     .i_instr_data  (i_instr_data                ),
@@ -130,6 +131,7 @@ lsu lsu_inst (
     .i_wr_data (src2            ),
     .i_mask    (ld_st_mask      ),
     .i_wren    (control2lsu_wren),
+    .o_data    (lsu_data        ),
     .o_mem_addr(o_mem_addr      ),
     .o_mem_data(o_mem_data      ),
     .o_mem_we  (o_mem_we        ),

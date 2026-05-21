@@ -1,6 +1,6 @@
 module reg_file #(
     parameter REG_NUM  = 32,
-    parameter REG_SIZE = 32,
+    parameter REG_SIZE = 32
 )(
     input  wire                 clk,
 
