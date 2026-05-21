@@ -9,7 +9,7 @@ module mmio_xbar(
     output reg         o_hexd_wren
 );
 
-assign o_mmio_data = o_mmio_data;
+assign o_mmio_data = i_mmio_data;
 
 always @(*) begin
     o_hexd_data = 16'hDEAD;

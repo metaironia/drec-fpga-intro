@@ -22,7 +22,7 @@ assign o_rd_data1 = r[i_rd_addr1];
 assign o_rd_data2 = r[i_rd_addr2];
 
 always @(posedge clk) begin
-    if (i_wr_en) begin
+    if (i_wr_en && (i_wr_addr != 0)) begin
         r[i_wr_addr] <= i_wr_data;
     end
 end

@@ -11,7 +11,7 @@ module core (
 );
 
 wire [31:0] u_imm = {i_instr_data[31:12], 12'b0};
-wire [31:0] b_imm = {{20{i_instr_data[31]}}, i_instr_data[7], i_instr_data[30:25], i_instr_data[11:6], 1'b0};
+wire [31:0] b_imm = {{18{i_instr_data[31]}}, i_instr_data[7], i_instr_data[30:25], i_instr_data[11:6], 1'b0};
 wire [31:0] j_imm = {{12{i_instr_data[31]}}, i_instr_data[19:12], i_instr_data[20], i_instr_data[30:21], 1'b0};
 
 wire [31:0] i_imm = {{20{i_instr_data[31]}}, i_instr_data[31:20]};
@@ -31,6 +31,8 @@ wire [31:0] alu_res;
 
 reg  [29:0] pc;
 wire [29:0] pc_inc = pc + 1'b1;
+
+assign o_instr_addr = pc;
 
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n)
@@ -88,8 +90,8 @@ mux4 mux_sel_2 (
     .i_2  (i_imm       ),
     .i_3  (s_imm       ),
     .i_4  ({pc, 2'b00} ),
-    .i_sel(control2sel1),
-    .o_res(sel1_2alu   )
+    .i_sel(control2sel2),
+    .o_res(sel2_2alu   )
 );
 
 reg_file reg_file_inst (

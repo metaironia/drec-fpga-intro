@@ -24,15 +24,15 @@ module mem_xbar #(
 wire is_addr_mmio = (i_addr >= MMIO_START) && (i_addr <= MMIO_LIMIT);
 wire is_addr_data = (i_addr >= DATA_START) && (i_addr <= DATA_LIMIT);
 
-assign o_dmem_addr   = i_addr;
-assign o_dmem_data   = i_data;
-assign o_dmem_mask   = i_mask;
-assign o_d_mem_wren  = is_addr_data && i_wren;
+assign o_dmem_addr = i_addr;
+assign o_dmem_data = i_data;
+assign o_dmem_mask = i_mask;
+assign o_dmem_wren = is_addr_data && i_wren;
 
-assign o_mmio_addr   = i_addr;
-assign o_mmio_data   = i_data;
-assign o_mmio_mask   = i_mask;
-assign o_d_mmio_wren = is_addr_mmio && i_wren;
+assign o_mmio_addr = i_addr;
+assign o_mmio_data = i_data;
+assign o_mmio_mask = i_mask;
+assign o_mmio_wren = is_addr_mmio && i_wren;
 
 always @(*) begin
     if (is_addr_data)

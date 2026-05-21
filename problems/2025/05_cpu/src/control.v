@@ -18,7 +18,7 @@ wire [2:0] funct3  = i_instr_data[14:12];
 wire [6:0] funct7  = i_instr_data[31:25];
 
 assign o_regfile_wren = (opcode != `STORE) && (opcode != `BRANCH);
-assign o_lsu_wren     = (opcode == `LOAD);
+assign o_lsu_wren     = (opcode == `STORE);
 
 always @(*) begin
     case (opcode)
