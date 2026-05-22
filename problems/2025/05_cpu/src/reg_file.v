@@ -18,8 +18,8 @@ localparam REG_ADDR = $clog2(REG_NUM);
 
 reg [REG_SIZE-1:0] r[REG_NUM-1:0];
 
-assign o_rd_data1 = r[i_rd_addr1];
-assign o_rd_data2 = r[i_rd_addr2];
+assign o_rd_data1 = (i_rd_addr1 == 0) ? 1'b0 : r[i_rd_addr1];
+assign o_rd_data2 = (i_rd_addr2 == 0) ? 1'b0 : r[i_rd_addr2];
 
 always @(posedge clk) begin
     if (i_wr_en && (i_wr_addr != 0)) begin

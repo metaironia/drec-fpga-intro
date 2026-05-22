@@ -6,7 +6,7 @@
 `define JALR   7'b1100111
 `define JAL    7'b1101111
 `define LUI    7'b0110111
-`define AUIPC  7'b0110111
+`define AUIPC  7'b0010111
 
 `define ALU_SEL_1_SRC1 2'b00
 `define ALU_SEL_1_BIMM 2'b01

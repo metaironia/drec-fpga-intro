@@ -11,7 +11,7 @@ module core (
 );
 
 wire [31:0] u_imm = {i_instr_data[31:12], 12'b0};
-wire [31:0] b_imm = {{18{i_instr_data[31]}}, i_instr_data[7], i_instr_data[30:25], i_instr_data[11:6], 1'b0};
+wire [31:0] b_imm = {{20{i_instr_data[31]}}, i_instr_data[7], i_instr_data[30:25], i_instr_data[11:8], 1'b0};
 wire [31:0] j_imm = {{12{i_instr_data[31]}}, i_instr_data[19:12], i_instr_data[20], i_instr_data[30:21], 1'b0};
 
 wire [31:0] i_imm = {{20{i_instr_data[31]}}, i_instr_data[31:20]};
